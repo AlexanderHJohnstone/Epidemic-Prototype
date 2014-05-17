@@ -47,9 +47,9 @@ public class LevelLoadBehavior : MonoBehaviour {
 		try 
 		{
 			Texture2D mapImage = mapFile as Texture2D;
-			Color[] mapArray = mapImage.GetPixels;
+			Color[] mapArray = mapImage.GetPixels();
+			Color [][] mapData = null;
 
-			/*
 
 			for ( int x = 0; x < mapImage.width; x++)
 			{
@@ -59,9 +59,9 @@ public class LevelLoadBehavior : MonoBehaviour {
 				}
 			}
 
-			*/
 
-			return mapImage.GetPixels();
+
+			return mapData;
 		}
 
 		catch (InvalidCastException e)
@@ -77,7 +77,7 @@ public class LevelLoadBehavior : MonoBehaviour {
 		}
 	}
 
-	private void Draw_Map ()
+	private void Draw_Map (Color[][] mapData)
 	{
 
 	}
