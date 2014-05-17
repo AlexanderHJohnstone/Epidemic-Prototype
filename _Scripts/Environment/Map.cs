@@ -3,7 +3,7 @@ using UnityEditor;
 using System;
 using System.Collections;
 
-public class LevelLoadBehavior : MonoBehaviour {
+public class Map : MonoBehaviour {
 
 	public enum levelLoad
 	{
@@ -15,6 +15,9 @@ public class LevelLoadBehavior : MonoBehaviour {
 	public levelLoad levelSelection = levelLoad.level_01;
 
 	public GameObject landscapeTile;
+
+	public TerrainData landscapeTerrain;
+
 	private GameObject landscapeHolder;
 	
 	void Start () 
@@ -78,15 +81,26 @@ public class LevelLoadBehavior : MonoBehaviour {
 
 	private void Draw_Map (Color[][] mapData)
 	{
+		//create new terrain
+		//GameObject mapTerrain = new Terrain();
+
+		//mapTerrain.terrainData = landscapeTerrain;
+		//mapTerrain.name = "Terrain";
+
+
+
 		landscapeHolder = new GameObject();
 		landscapeHolder.name = "Landscape Holder";
+
+
+
 
 		for ( int x = 0; x < mapData.Length; x++)
 		{
 			for ( int y = 0; y < mapData[0].Length; y++)
 			{
 				GameObject mapTile = (GameObject)Instantiate(landscapeTile);
-				landscapeTile.transform.position = new Vector3 (x,mapData[x][y].grayscale * 5,y);
+				landscapeTile.transform.position = new Vector3 (x,mapData[x][y].grayscale * 3,y);
 
 				mapTile.transform.parent = landscapeHolder.transform;
 			}
