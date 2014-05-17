@@ -23,7 +23,7 @@ public class LevelLoadBehavior : MonoBehaviour {
 		if (mapData != null)
 		{
 			Debug.Log("Loaded "+levelSelection.ToString());
-			Debug.Log("Map Size is "+mapData.Length);
+			Debug.Log("Map Size is "+mapData.Length +" x "+mapData[0].Length);
 
 			Draw_Map(mapData);
 		}
@@ -48,19 +48,17 @@ public class LevelLoadBehavior : MonoBehaviour {
 		{
 			Texture2D mapImage = mapFile as Texture2D;
 			Color[] mapArray = mapImage.GetPixels();
-			Color [][] mapData = null;
-
+			Color [][] mapData = new Color[mapImage.width][];
 
 			for ( int x = 0; x < mapImage.width; x++)
 			{
+				mapData[x] = new Color[mapImage.height];
+
 				for ( int y = 0; y < mapImage.height; y++)
 				{
-				
+					mapData[x][y] = mapArray[x + (y * mapImage.width)];
 				}
 			}
-
-
-
 			return mapData;
 		}
 
