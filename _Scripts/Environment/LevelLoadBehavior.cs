@@ -15,6 +15,7 @@ public class LevelLoadBehavior : MonoBehaviour {
 	public levelLoad levelSelection = levelLoad.level_01;
 
 	public GameObject landscapeTile;
+	private GameObject landscapeHolder;
 	
 	void Start () 
 	{
@@ -77,6 +78,18 @@ public class LevelLoadBehavior : MonoBehaviour {
 
 	private void Draw_Map (Color[][] mapData)
 	{
+		landscapeHolder = new GameObject();
+		landscapeHolder.name = "Landscape Holder";
 
+		for ( int x = 0; x < mapData.Length; x++)
+		{
+			for ( int y = 0; y < mapData[0].Length; y++)
+			{
+				GameObject mapTile = (GameObject)Instantiate(landscapeTile);
+				landscapeTile.transform.position = new Vector3 (x,mapData[x][y].grayscale * 5,y);
+
+				mapTile.transform.parent = landscapeHolder.transform;
+			}
+		}
 	}
 }
