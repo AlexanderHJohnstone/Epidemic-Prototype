@@ -9,7 +9,7 @@ public class Tile : MonoBehaviour {
 	private landscapeType type = landscapeType.plane;
 
 	private Color neutral_Color = new Color (0.8f,0.8f, 0.8f, 0f);
-	private Color highlighted_Color = new Color (0.8f,0, 0, 0.6f);
+	private Color highlighted_Color = new Color (0.8f,0, 0, 0.4f);
 	 
 
 	public void Constructor (Vector3 loc, bool access, landscapeType tileType)

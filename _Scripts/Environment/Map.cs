@@ -23,7 +23,13 @@ public class Map : MonoBehaviour {
 	public GameObject tree;
 
 	public float terrainHeight;
-	
+
+	public int landscapeSmoothing;
+
+	private GameObject[] tiles;
+	private int mapWidth;
+
+
 	void Start () 
 	{
 		Color[][] mapData = Read_Map_Image_File(levelSelection.ToString());
@@ -33,12 +39,23 @@ public class Map : MonoBehaviour {
 			Debug.Log("Loaded "+levelSelection.ToString());
 			Debug.Log("Map Size is "+mapData.Length +" x "+mapData[0].Length);
 
-
-			Extract_Level_Data (mapData);
-
 			Create_Landscape(mapData);
 		}
-	}	 
+	}	
+	/*
+	public void Update ()
+	{
+		bool rand = true;
+		if (UnityEngine.Random.Range(0,1)>0.2f){rand=true;}
+		tiles[(int)UnityEngine.Random.Range(0,tiles.Length)].GetComponent<Tile>().Set_Highlighted(rand);
+	}
+*/
+
+	public Tile Get_Tile (int X, int Y)
+	{
+		return tiles [X * mapWidth + Y ].GetComponent<Tile>();
+	}
+
 
 	public Color[][] Read_Map_Image_File (string levelName)
 	{
@@ -50,6 +67,8 @@ public class Map : MonoBehaviour {
 			Texture2D mapImage = mapFile as Texture2D;
 			Color[] mapArray = mapImage.GetPixels();
 			Color [][] mapData = new Color[mapImage.width][];
+
+			mapWidth = mapData.Length;
 
 			for ( int x = 0; x < mapImage.width; x++)
 			{
@@ -74,13 +93,9 @@ public class Map : MonoBehaviour {
 			Debug.Log("Map file isn't readable");
 			return null;
 		}
-	}
 
-	private void Extract_Level_Data (Color[][] mapData)
-	{
 
 	}
-
 
 	private void Create_Landscape (Color[][] mapData)
 	{
@@ -90,6 +105,8 @@ public class Map : MonoBehaviour {
 
 		landscapeHolder = new GameObject();
 		landscapeHolder.name = "Landscape Holder";
+
+		tiles = new GameObject[mapData.Length * mapData[0].Length];
 
 		for ( int x = 0; x < mapData.Length; x++)
 		{
@@ -103,7 +120,7 @@ public class Map : MonoBehaviour {
 				{
 					GameObject treeObject = (GameObject)Instantiate(tree);
 					
-					treeObject.transform.position = new Vector3 (x + 0.5f,mapData[y][x].grayscale * terrainHeight,y - 0.5f);
+					treeObject.transform.position = new Vector3 (x + 0.5f,mapData[y][x].grayscale * (terrainHeight/landscapeSmoothing),y - 0.5f);
 					
 					//smooth map
 					mapData[x][y] = (mapData[x+1][y] + mapData[x-1][y] + mapData[x][y+1] + mapData[x][y-1])/4;
@@ -112,16 +129,16 @@ public class Map : MonoBehaviour {
 				}
 
 				GameObject mapTile = (GameObject)Instantiate(landscapeTile);
-				landscapeTile.transform.position = new Vector3 (x + 0.5f,(mapData[y][x].grayscale * terrainHeight)+0.01f,y + 0.5f);
+				landscapeTile.transform.position = new Vector3 (x + 0.5f,(mapData[y][x].grayscale * (terrainHeight/landscapeSmoothing))+0.01f,y + 0.5f);
 
 				mapTile.transform.parent = landscapeHolder.transform;
 
 				mapTile.AddComponent<Tile>();
-				mapTile.GetComponent<Tile>().Constructor(new Vector3 (x,mapData[y][x].grayscale * terrainHeight,y),tileOpen,landscapeType.plane);
+				mapTile.GetComponent<Tile>().Constructor(new Vector3 (x,mapData[y][x].grayscale * (terrainHeight/landscapeSmoothing),y),tileOpen,landscapeType.plane);
+
+				tiles [(int)(mapData.Length*x) + y]=mapTile;
 			}
 		}
-
-
 
 		for (int h1 = 0 ; h1 < mapData.Length*terrainScalar; h1++)
 		{
@@ -143,19 +160,24 @@ public class Map : MonoBehaviour {
 					float value1 = (((mapData[xPos+1][yPos].grayscale - mapData[xPos-1][yPos].grayscale)*xOffset)+mapData[xPos][yPos].grayscale);
 					float value2 = (((mapData[xPos][yPos+1].grayscale - mapData[xPos][yPos-1].grayscale)*yOffset)+mapData[xPos][yPos].grayscale);
 
-
 					value = (value1 + value2)/2;
 
-					
-					value = (((heights[h1+1,h2] + heights[h1,h2+1] + heights[h1-1,h2] + heights[h1,h2-1])/4)+value)/2;
+					for (int s = 0; s < landscapeSmoothing; s++)
+					{
+						value = (((heights[h1+s,h2] + heights[h1,h2+s] + heights[h1-s,h2] + heights[h1,h2-s])/4)+value)/2;
+					}
+
 				}
+				else
+				{
+					value = 0;
+				}	
 				
-				
-				heights[h1,h2] = value * (terrainHeight/10);
+				heights[h1,h2] = value * (terrainHeight*0.15f);
 			}
-			
 		}
 
+		landscapeTerrain.size = new Vector3 (mapData.Length,10,mapData[0].Length);
 		landscapeTerrain.SetHeights(1,1,heights);
 				
 		GameObject mapTerrain = Terrain.CreateTerrainGameObject(landscapeTerrain);
