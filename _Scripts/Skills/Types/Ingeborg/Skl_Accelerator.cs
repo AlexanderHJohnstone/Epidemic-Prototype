@@ -16,12 +16,10 @@ public class Skl_Accelerator : Skill {
 		owner = unit;
 		range = 0;
 	} 
-	
-	public bool Perform(Unit target) {
-		if(InRange(target.GetTile())) {
 
-			int revisedDamage = baseDamage - target.GetArmor();
-			target.TakeDamage(revisedDamage);
+	public bool Perform(Unit target) {
+		if(InRange(target.GetTile()) && target == owner) {
+			owner.AddPassive("Accelerated" , pendulumIncrease);
 			return true;
 		}
 		else { return false; }
