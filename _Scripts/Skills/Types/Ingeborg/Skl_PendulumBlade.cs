@@ -20,7 +20,7 @@ public class Skl_PendulumBlade : Skill {
 	
 	public bool Perform(Unit target) {
 		if(InRange(target.GetTile())) {
-			int pendulumAdd = pendulumDamage + owner.GetPassives("Accelerated");
+			int pendulumAdd = pendulumDamage + owner.GetPassive("Accelerated");
 			if(pendulumAdd > pendulumMaxAdd) { pendulumAdd = pendulumMaxAdd; }
 
 			int revisedDamage = baseDamage + pendulumAdd - target.GetArmor();

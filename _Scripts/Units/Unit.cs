@@ -34,6 +34,9 @@ public class Unit : MonoBehaviour {
 	public int GetArmor() { return armor; }
 	public Tile GetTile() { return currentTile; }
 	public Map GetMap() { return currentMap; }
+
+	// *** SETTER METHODS
+	public void SetTile(Tile newTile) { currentTile = newTile; }
 	
 	// *** INITIALIZATION METHODS 
 	

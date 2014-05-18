@@ -15,7 +15,7 @@ public class Skl_Move : Skill {
 	
 	public bool Perform(Tile moveTile) {
 		if(InRange(moveTile)) {
-			currentTile = moveTile;
+			owner.SetTile(moveTile);
 			return true;
 		}
 		else { return false; }

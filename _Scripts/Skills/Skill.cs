@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public abstract class Skill {
+public class Skill {
 	
 	// Statistics
 	public string name;				// The name of the skill.
@@ -47,7 +47,7 @@ public abstract class Skill {
 	// ACTION METHODS
 	
 	// Must be overriden. Returns true if the skill executes successfully.
-	public abstract bool Perform();
+	public virtual bool Perform() { return false; }
 	
 	// VALIDATION METHODS
 	
