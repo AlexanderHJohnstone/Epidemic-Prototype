@@ -17,7 +17,7 @@ public class Tile : MonoBehaviour {
 		location = loc;
 		open = access;
 		type = tileType;
-		Set_Highlighted(false);
+		Set_Highlighted(true);
 
 		Set_Visibility () ;
 	}
@@ -37,10 +37,17 @@ public class Tile : MonoBehaviour {
 	public void Set_Highlighted (bool value) 
 	{ 
 		highlighted = value; 
+
+		Renderer[] tileRender = GetComponentsInChildren<Renderer>();
+
 		if (open)
 		{
-			if (value){	this.renderer.material.color = highlighted_Color; }
-			else { this.renderer.material.color = neutral_Color; }
+			if (value)
+				foreach ( Renderer r in tileRender ) 
+					r.material.color = highlighted_Color; 
+			else 
+				foreach ( Renderer r in tileRender ) 
+					r.material.color = neutral_Color;
 		}
 	}
 
@@ -50,5 +57,11 @@ public class Tile : MonoBehaviour {
 
 	public float Get_Height () { return location.y; }
 
-	private void Set_Visibility () { this.gameObject.renderer.enabled = open; }
+	private void Set_Visibility () 
+	{ 
+		Renderer[] tileRender = GetComponentsInChildren<Renderer>();
+
+		foreach ( Renderer r in tileRender ) 
+			r.gameObject.renderer.enabled = open;
+	}
 }

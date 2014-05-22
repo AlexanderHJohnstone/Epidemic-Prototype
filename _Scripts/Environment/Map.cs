@@ -1,10 +1,120 @@
 ﻿using UnityEngine;
 using UnityEditor;
-using System;
 using System.Collections;
 
-public class Map : MonoBehaviour {
+public class Map : MonoBehaviour 
+{
+	//class map storage
+	private GameObject[,] tiles;
+	private Unit[] enemies;
+	private Unit[] units;
 
+	public void Constructor ( int levelSize, int landscapeDensity, int difficulty, int characters )
+	{
+		Draw_Map (levelSize);
+		Draw_Landscape (landscapeDensity, levelSize);
+		Spawn_Characters (characters);
+		Spawn_Enemies (difficulty);
+	}
+
+	/// <summary>
+	/// Instantiates and places map tiles, as well as temporary 'ground' texture
+	/// </summary>
+	private void Draw_Map ( int size )
+	{
+		Debug.Log ("Draw Map with size: " + size);
+
+		GameObject tileHolder = new GameObject();
+		tileHolder.name = "TILES";
+
+		GameObject tile = (GameObject)Resources.Load ("Landscape/Navigation/Tile");
+		
+		tiles = new GameObject[size,size];
+
+		for (int i = 0; i < size; i++ )
+		{
+			for (int j = 0; j < size; j++ )
+			{
+				tiles[i,j] = (GameObject)Instantiate(tile);
+				tiles[i,j].transform.position = new Vector3 (i,0,j);
+				tiles[i,j].AddComponent<Tile>();
+				tiles[i,j].GetComponent<Tile>().Constructor(new Vector3(i,0,j),true,landscapeType.plane);
+				tiles[i,j].name = i+","+j;
+				tiles[i,j].transform.parent = tileHolder.transform;
+			}
+		}
+	}
+
+	/// <summary>
+	/// Instantiates random set of terrain objects from 'terrain/features' folder, adds them to map
+	/// </summary>
+	/// <param name="density">Density.</param>
+	private void Draw_Landscape ( int density, int size )
+	{
+		Debug.Log ("Draw Landscape with density: " + density);
+
+		Object[] landscapeFeatures = Resources.LoadAll("Landscape/Features/");
+
+		GameObject featuresHolder = new GameObject();
+		featuresHolder.name = "FEATURES";
+
+		for (int i = 0; i < size; i++ )
+		{
+			for (int j = 0; j < size; j++ )
+			{
+				if ((Random.Range(0,100)) < density)
+				{
+					GameObject feature = (GameObject)Instantiate(landscapeFeatures[(int)Random.Range(0,landscapeFeatures.Length-0.1f)]);
+					feature.transform.parent = featuresHolder.transform;
+					feature.transform.position = new Vector3 (i,0,j);
+					tiles[i,j].GetComponent<Tile>().Set_Open(false);
+				}
+			}
+		}
+	}
+
+	/// <summary>
+	/// Spawns enemies on the map
+	/// </summary>
+	private void Spawn_Enemies ( int difficulty )
+	{
+		Debug.Log ("Spawned " + difficulty + " monsters");
+
+	}
+
+	/// <summary>
+	/// Spawn Characters on the map
+	/// </summary>
+	private void Spawn_Characters ( int characters )
+	{
+		Debug.Log ("Spawned " + characters + " characters");
+
+	}
+
+	/// <summary>
+	/// Returns the tile at given location
+	/// </summary>
+	public Tile Get_Tile (int X, int Y)
+	{
+		try { return tiles [X,Y].GetComponent<Tile>(); }
+
+		catch (UnityException e)
+		{
+			Debug.Log ("Get Tile could not return a tile as index is out of range. Returning null.");
+			return null;
+		}		
+	}
+
+	public Unit[] Get_Units () {return units;}
+	public Unit Get_Unit (int id) { if (id < units.Length) return units[id]; else return null; }
+
+	public Unit[] Get_Enimies () { return enemies; }
+	public Unit Get_Enemy (int id) { if (id < enemies.Length) return enemies[id]; else return null; }
+	
+}
+
+
+	/*
 	public enum levelLoad
 	{
 		level_01,
@@ -42,14 +152,6 @@ public class Map : MonoBehaviour {
 			Create_Landscape(mapData);
 		}
 	}	
-	/*
-	public void Update ()
-	{
-		bool rand = true;
-		if (UnityEngine.Random.Range(0,1)>0.2f){rand=true;}
-		tiles[(int)UnityEngine.Random.Range(0,tiles.Length)].GetComponent<Tile>().Set_Highlighted(rand);
-	}
-*/
 
 	public Tile Get_Tile (int X, int Y)
 	{
@@ -182,4 +284,5 @@ public class Map : MonoBehaviour {
 				
 		GameObject mapTerrain = Terrain.CreateTerrainGameObject(landscapeTerrain);
 	}
-}
+	*/
+
