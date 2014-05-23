@@ -6,7 +6,7 @@ public class Tile : MonoBehaviour {
 	private Vector3 location = Vector3.zero;
 	private bool open = false;
 	private bool highlighted = false;
-	private landscapeType type = landscapeType.plane;
+	private landscapeType type = landscapeType.open;
 
 	private Color neutral_Color = new Color (0.8f,0.8f, 0.8f, 0f);
 	private Color highlighted_Color = new Color (0.8f,0, 0, 0.4f);
@@ -15,8 +15,11 @@ public class Tile : MonoBehaviour {
 	public void Constructor (Vector3 loc, bool access, landscapeType tileType)
 	{
 		location = loc;
-		open = access;
+		Set_Open(access);
+
 		type = tileType;
+		Set_Tag ();
+
 		Set_Highlighted(true);
 
 		Set_Visibility () ;
@@ -26,9 +29,25 @@ public class Tile : MonoBehaviour {
 
 	public bool Get_Open () { return open; }
 
+	private void Set_Tag ()
+	{
+		if (type == landscapeType.open)
+			this.gameObject.tag = "open";
+		else if ( type == landscapeType.moveBlock )
+			this.gameObject.tag = "moveBlock";
+		else
+			this.gameObject.tag = "visBlock";
+	}
+
 	public void Set_Open (bool value) 
 	{ 
-		open = value; 
+		open = value;
+
+		if (open)
+			this.gameObject.tag = "open";	
+		else
+			this.gameObject.tag = "moveBlock";
+		
 		Set_Visibility ();
 	}
 

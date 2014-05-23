@@ -1,20 +1,21 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Map : MonoBehaviour 
 {
 	//class map storage
 	private GameObject[,] tiles;
-	private Unit[] enemies;
-	private Unit[] units;
+	private List<Unit> enemies;
+	private List<Unit> units;
 
 	public void Constructor ( int levelSize, int landscapeDensity, int difficulty, int characters )
 	{
 		Draw_Map (levelSize);
 		Draw_Landscape (landscapeDensity, levelSize);
-		Spawn_Characters (characters);
-		Spawn_Enemies (difficulty);
+		Spawn_Characters (characters, levelSize);
+		Spawn_Enemies (difficulty, levelSize);
 	}
 
 	/// <summary>
@@ -38,7 +39,7 @@ public class Map : MonoBehaviour
 				tiles[i,j] = (GameObject)Instantiate(tile);
 				tiles[i,j].transform.position = new Vector3 (i,0,j);
 				tiles[i,j].AddComponent<Tile>();
-				tiles[i,j].GetComponent<Tile>().Constructor(new Vector3(i,0,j),true,landscapeType.plane);
+				tiles[i,j].GetComponent<Tile>().Constructor(new Vector3(i,0,j),true,landscapeType.open);
 				tiles[i,j].name = i+","+j;
 				tiles[i,j].transform.parent = tileHolder.transform;
 			}
@@ -74,21 +75,86 @@ public class Map : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Spawns enemies on the map
-	/// </summary>
-	private void Spawn_Enemies ( int difficulty )
-	{
-		Debug.Log ("Spawned " + difficulty + " monsters");
-
-	}
-
-	/// <summary>
 	/// Spawn Characters on the map
 	/// </summary>
-	private void Spawn_Characters ( int characters )
+	private void Spawn_Characters ( int characters, int levelSize )
 	{
 		Debug.Log ("Spawned " + characters + " characters");
 
+		units = new List<Unit>();
+
+		//find a spawn location that's free from landscape features
+		bool legalSpawn = false;
+
+		while (legalSpawn == false)
+		{
+			int centerX = (int)Random.Range(3, levelSize-3);
+			int centerY = (int)Random.Range(3, levelSize-3);
+
+			if (tiles[centerX,centerY].GetComponent<Tile>().Get_Open())
+			{
+				legalSpawn = true;
+
+				int charactersPlaced = 0;
+				
+				while ( charactersPlaced < characters )
+				{
+					int spawnX = centerX + ((int)Random.Range(-2.9f,2.9f));
+					int spawnY = centerY + ((int)Random.Range(-2.9f,2.9f));
+
+					if ( tiles[spawnX,spawnY].GetComponent<Tile>().Get_Open() )
+					{
+						GameObject character = (GameObject)Instantiate((GameObject)Resources.Load ("Models/tempUnit"));
+						character.name = "CHAR_"+charactersPlaced;
+
+						character.transform.position = new Vector3 (spawnX,0,spawnY);
+
+						character.AddComponent<Unit>();
+						character.GetComponent<Unit>().InitializeOnMap(this,tiles[spawnX,spawnY].GetComponent<Tile>());
+
+						units.Add(character.GetComponent<Unit>());
+
+						charactersPlaced++;
+					}
+				}
+			}
+		}
+	}
+	
+	/// <summary>
+	/// Spawns enemies on the map
+	/// </summary>
+	private void Spawn_Enemies ( int difficulty, int levelSize )
+	{
+		Debug.Log ("Spawned " + difficulty + " monsters");
+
+		enemies = new List<Unit>();
+
+		for ( int i = 0; i < difficulty ; i++ )
+		{
+			bool legalSpawn = false;
+
+			while ( legalSpawn == false )
+			{
+				int spawnX = (int)Random.Range(3, levelSize-3);
+				int spawnY = (int)Random.Range(3, levelSize-3);
+
+				if ( tiles[spawnX,spawnY].GetComponent<Tile>().Get_Open() )
+				{
+					GameObject enemy = (GameObject)Instantiate((GameObject)Resources.Load ("Models/tempEnemy"));
+					enemy.name = "ENEMY_"+i;
+
+					enemy.transform.position = new Vector3 (spawnX,0,spawnY);
+
+					enemy.AddComponent<Unit>();
+					enemy.GetComponent<Unit>().InitializeOnMap(this,tiles[spawnX,spawnY].GetComponent<Tile>());
+
+					enemies.Add(enemy.GetComponent<Unit>());
+					
+					legalSpawn = true;
+				}
+			}
+		}
 	}
 
 	/// <summary>
@@ -105,11 +171,11 @@ public class Map : MonoBehaviour
 		}		
 	}
 
-	public Unit[] Get_Units () {return units;}
-	public Unit Get_Unit (int id) { if (id < units.Length) return units[id]; else return null; }
+	public List<Unit> Get_Units () {return units;}
+	public Unit Get_Unit (int id) { if (id < units.Count) return units[id]; else return null; }
 
-	public Unit[] Get_Enimies () { return enemies; }
-	public Unit Get_Enemy (int id) { if (id < enemies.Length) return enemies[id]; else return null; }
+	public List<Unit> Get_Enimies () { return enemies; }
+	public Unit Get_Enemy (int id) { if (id < enemies.Count) return enemies[id]; else return null; }
 	
 }
 
