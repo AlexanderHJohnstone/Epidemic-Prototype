@@ -10,31 +10,35 @@ public class Map : MonoBehaviour
 	private List<Unit> enemies;
 	private List<Unit> units;
 
-	public void Constructor ( int levelSize, int landscapeDensity, int difficulty, int characters )
+	private Vector2 startPos = Vector2.zero;
+
+	public void Constructor ( int levelSizeX, int levelSizeY, int landscapeDensity, int difficulty, int characters )
 	{
-		Draw_Map (levelSize);
-		Draw_Landscape (landscapeDensity, levelSize);
-		Spawn_Characters (characters, levelSize);
-		Spawn_Enemies (difficulty, levelSize);
+		Draw_Map (levelSizeX, levelSizeY);
+		Draw_Landscape (landscapeDensity, levelSizeX, levelSizeY);
+		Spawn_Characters (characters, levelSizeX, levelSizeY);
+		Spawn_Enemies (difficulty, levelSizeX, levelSizeY);
+
+		//
 	}
 
 	/// <summary>
 	/// Instantiates and places map tiles, as well as temporary 'ground' texture
 	/// </summary>
-	private void Draw_Map ( int size )
+	private void Draw_Map ( int sizeX, int sizeY )
 	{
-		Debug.Log ("Draw Map with size: " + size);
+		Debug.Log ("Draw Map with size: " + sizeX +"x"+sizeY);
 
 		GameObject tileHolder = new GameObject();
 		tileHolder.name = "TILES";
 
 		GameObject tile = (GameObject)Resources.Load ("Landscape/Navigation/tempTile");
 		
-		tiles = new GameObject[size,size];
+		tiles = new GameObject[sizeX,sizeY];
 
-		for (int i = 0; i < size; i++ )
+		for (int i = 0; i < sizeX; i++ )
 		{
-			for (int j = 0; j < size; j++ )
+			for (int j = 0; j < sizeY; j++ )
 			{
 				tiles[i,j] = (GameObject)Instantiate(tile);
 				tiles[i,j].transform.position = new Vector3 (i,0,j);
@@ -50,7 +54,7 @@ public class Map : MonoBehaviour
 	/// Instantiates random set of terrain objects from 'terrain/features' folder, adds them to map
 	/// </summary>
 	/// <param name="density">Density.</param>
-	private void Draw_Landscape ( int density, int size )
+	private void Draw_Landscape ( int density, int sizeX, int sizeY )
 	{
 		Debug.Log ("Draw Landscape with density: " + density);
 
@@ -59,9 +63,9 @@ public class Map : MonoBehaviour
 		GameObject featuresHolder = new GameObject();
 		featuresHolder.name = "FEATURES";
 
-		for (int i = 0; i < size; i++ )
+		for (int i = 0; i < sizeX; i++ )
 		{
-			for (int j = 0; j < size; j++ )
+			for (int j = 0; j < sizeY; j++ )
 			{
 				if ((Random.Range(0,100)) < density)
 				{
@@ -77,7 +81,7 @@ public class Map : MonoBehaviour
 	/// <summary>
 	/// Spawn Characters on the map
 	/// </summary>
-	private void Spawn_Characters ( int characters, int levelSize )
+	private void Spawn_Characters ( int characters, int sizeX, int sizeY  )
 	{
 		Debug.Log ("Spawned " + characters + " characters");
 
@@ -88,8 +92,10 @@ public class Map : MonoBehaviour
 
 		while (legalSpawn == false)
 		{
-			int centerX = (int)Random.Range(3, levelSize-3);
-			int centerY = (int)Random.Range(3, levelSize-3);
+			int centerX = (int)Random.Range(3, sizeX-3);
+			int centerY = (int)Random.Range(3, sizeY-3);
+
+			startPos = new Vector2 (centerX, centerY);
 
 			if (tiles[centerX,centerY].GetComponent<Tile>().Get_Open())
 			{
@@ -114,6 +120,8 @@ public class Map : MonoBehaviour
 
 						units.Add(character.GetComponent<Unit>());
 
+						tiles[spawnX,spawnY].GetComponent<Tile>().Set_Open(false);
+
 						charactersPlaced++;
 					}
 				}
@@ -124,7 +132,7 @@ public class Map : MonoBehaviour
 	/// <summary>
 	/// Spawns enemies on the map
 	/// </summary>
-	private void Spawn_Enemies ( int difficulty, int levelSize )
+	private void Spawn_Enemies ( int difficulty, int sizeX, int sizeY  )
 	{
 		Debug.Log ("Spawned " + difficulty + " monsters");
 
@@ -136,8 +144,8 @@ public class Map : MonoBehaviour
 
 			while ( legalSpawn == false )
 			{
-				int spawnX = (int)Random.Range(3, levelSize-3);
-				int spawnY = (int)Random.Range(3, levelSize-3);
+				int spawnX = (int)Random.Range(3, sizeX-3);
+				int spawnY = (int)Random.Range(3, sizeY-3);
 
 				if ( tiles[spawnX,spawnY].GetComponent<Tile>().Get_Open() )
 				{
@@ -150,6 +158,8 @@ public class Map : MonoBehaviour
 					enemy.GetComponent<Unit>().InitializeOnMap(this,tiles[spawnX,spawnY].GetComponent<Tile>());
 
 					enemies.Add(enemy.GetComponent<Unit>());
+
+					tiles[spawnX,spawnY].GetComponent<Tile>().Set_Open(false);
 					
 					legalSpawn = true;
 				}
@@ -176,6 +186,8 @@ public class Map : MonoBehaviour
 
 	public List<Unit> Get_Enimies () { return enemies; }
 	public Unit Get_Enemy (int id) { if (id < enemies.Count) return enemies[id]; else return null; }
+
+	public Vector2 Get_Start_Pos () { return startPos; }
 	
 }
 

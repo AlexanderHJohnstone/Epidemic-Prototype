@@ -63,8 +63,6 @@ public class Tile : MonoBehaviour {
 			foreach ( Renderer r in tileRender ) 
 				r.material.color = selected_Color; 
 		}
-
-		Debug.Log("HERE");
 	}
 
 	public void Set_Highlighted (bool value) 

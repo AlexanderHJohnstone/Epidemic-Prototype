@@ -28,7 +28,7 @@ public class Inputs : MonoBehaviour {
 			RaycastHit gameHit;
 			if (Physics.Raycast(gameRay, out gameHit))
 			{
-				if (doubleClick < 1 && gameHit.collider.gameObject == selectedGO) cameraHolder.GetComponent<GameCamera>().Move_To_Position(selectedGO.transform.position);
+				if (doubleClick < 0.35f && gameHit.collider.gameObject == selectedGO) cameraHolder.GetComponent<GameCamera>().Move_To_Position(selectedGO.transform.position);
 				doubleClick = 0;
 
 				selectedGO = gameHit.collider.gameObject;
@@ -36,7 +36,7 @@ public class Inputs : MonoBehaviour {
 			}
 		}
 
-		if ( doubleClick < 1) doubleClick += Time.deltaTime;
+		if ( doubleClick < 0.35f) doubleClick += Time.deltaTime;
 	}
 
 	public GameObject Get_Selected ()
