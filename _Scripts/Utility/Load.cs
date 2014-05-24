@@ -25,21 +25,15 @@ public class Load : MonoBehaviour
 
 		//set up the game camera and link the gui camera
 		GameObject cameraHolder = new GameObject();
-		cameraHolder.name = "CAMERA_HOLDER";
+		cameraHolder.name = "CAMERA";
 		cameraHolder.transform.position = new Vector3 (0,20,0);
 		cameraHolder.transform.eulerAngles = new Vector3 (0,45,0);
-
-		GameObject gameCamera = new GameObject();
-		gameCamera.name = "CAMERA_OBJECT";
-		gameCamera.transform.position = cameraHolder.transform.position;
-		gameCamera.transform.eulerAngles = new Vector3 (50,45,0);
-		gameCamera.AddComponent<Camera>();
-		gameCamera.GetComponent<Camera>().backgroundColor = Color.black;
-		gameCamera.transform.parent = cameraHolder.transform;
-
+		cameraHolder.AddComponent<GameCamera>();
+		cameraHolder.GetComponent<GameCamera>().Initialize(cameraHolder);
+	
 		//add input script to this object
 		this.gameObject.AddComponent<Inputs>();
-		this.gameObject.GetComponent<Inputs>().Initialize(cameraHolder, gameCamera.GetComponent<Camera>(),guiRoot.GetComponent<Camera>());
+		this.gameObject.GetComponent<Inputs>().Initialize(cameraHolder,guiRoot.GetComponent<Camera>());
 	
 	}
 }

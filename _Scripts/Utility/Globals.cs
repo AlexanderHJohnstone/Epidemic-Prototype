@@ -30,6 +30,10 @@ public class Globals
 	#region PLAYER_VARS
 
 	public float CAMERA_MOVE_SPEED = 0.3f;
+	public float CAMERA_MOVE_SENSITIVITY = 0.6f;
+	public float CAMERA_MOVE_BORDER = 0.15f;
+
+	public Color SELECTED_COLOR =  new Color (0.8f,0, 0, 0.8f);
 	
 	#endregion
 	
@@ -39,14 +43,3 @@ public class Globals
 	}
 }
 
-
-
-public enum ShapeType {
-	
-	Circle,
-	Square,
-	Triangle,
-	Hexagon,
-	Star
-	
-}

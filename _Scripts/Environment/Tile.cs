@@ -10,6 +10,7 @@ public class Tile : MonoBehaviour {
 
 	private Color neutral_Color = new Color (0.8f,0.8f, 0.8f, 0f);
 	private Color highlighted_Color = new Color (0.8f,0, 0, 0.4f);
+	private Color selected_Color = new Color (0.8f,0, 0, 0.8f);
 	 
 
 	public void Constructor (Vector3 loc, bool access, landscapeType tileType)
@@ -52,6 +53,19 @@ public class Tile : MonoBehaviour {
 	}
 
 	public landscapeType Get_Type () { return type; }
+
+	public void Selected ()
+	{
+		Renderer[] tileRender = GetComponentsInChildren<Renderer>();
+		
+		if (open)
+		{
+			foreach ( Renderer r in tileRender ) 
+				r.material.color = selected_Color; 
+		}
+
+		Debug.Log("HERE");
+	}
 
 	public void Set_Highlighted (bool value) 
 	{ 
