@@ -28,7 +28,7 @@ public class Map : MonoBehaviour
 		GameObject tileHolder = new GameObject();
 		tileHolder.name = "TILES";
 
-		GameObject tile = (GameObject)Resources.Load ("Landscape/Navigation/Tile");
+		GameObject tile = (GameObject)Resources.Load ("Landscape/Navigation/tempTile");
 		
 		tiles = new GameObject[size,size];
 
