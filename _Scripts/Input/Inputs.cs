@@ -32,9 +32,14 @@ public class Inputs : MonoBehaviour {
 				doubleClick = 0;
 
 				selectedGO = gameHit.collider.gameObject;
-				selectedGO.SendMessage("Selected", SendMessageOptions.DontRequireReceiver);
+				selectedGO.SendMessage("Set_Selected", true, SendMessageOptions.DontRequireReceiver);
 			}
 		}
+
+		if (Input.GetAxis("Mouse ScrollWheel") < -0.3f)
+			cameraHolder.GetComponent<GameCamera>().Zoom(true);
+		else if (Input.GetAxis("Mouse ScrollWheel") > 0.3f)
+			cameraHolder.GetComponent<GameCamera>().Zoom(false);
 
 		if ( doubleClick < 0.35f) doubleClick += Time.deltaTime;
 	}

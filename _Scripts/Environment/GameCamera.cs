@@ -11,7 +11,10 @@ public class GameCamera : MonoBehaviour {
 	private bool targeting = false;
 	private Vector3 targetLocation = Vector3.zero;
 	private Vector3 startLocation = Vector3.zero;
-	private float targetingTimer = 0;
+	private float lerpTimer = 0;
+
+	private bool zoomedIn = false;
+	private bool zoomCamera = false;
 
 	public void Initialize (GameObject parent, int levelX, int levelY, Vector2 spawnPos) 
 	{
@@ -24,7 +27,8 @@ public class GameCamera : MonoBehaviour {
 		CameraComponent = gameCamera.GetComponent<Camera>();
 
 		CameraComponent.backgroundColor = Color.black;
-		CameraComponent.fieldOfView = 50;
+		CameraComponent.fieldOfView = Globals.Instance.CAMERA_ZOOM_OUT;
+		//CameraComponent.isOrthoGraphic = true;
 
 		Set_Map_Bounds (levelX, levelY);
 
@@ -38,7 +42,13 @@ public class GameCamera : MonoBehaviour {
 		if (!cameraLocked) 
 		{
 			if (targeting) Target_Camera(); 
-			else Translate_Camera();
+			else 
+			{
+				Translate_Camera();
+				if (zoomCamera) Zoom_Camera ();
+			}
+
+
 		}
 	}
 
@@ -75,18 +85,18 @@ public class GameCamera : MonoBehaviour {
 		mapBounds.z = -10;
 	}
 
-	private void Set_Start_Pos ( Vector2 loc ) { this.transform.position = new Vector3 (loc.x - 10f, 20f, loc.y - 10f); }
+	private void Set_Start_Pos ( Vector2 loc ) { this.transform.position = new Vector3 (loc.x -10f, 15f, loc.y-10f); }
 
 	private void Target_Camera ()
 	{
-		targetingTimer += Time.deltaTime;
+		lerpTimer += Time.deltaTime;
 
-		this.transform.position = new Vector3 ( Mathf.Lerp(startLocation.x,targetLocation.x -10,targetingTimer),this.transform.position.y,Mathf.Lerp(startLocation.z,targetLocation.z -10,targetingTimer));
+		this.transform.position = new Vector3 ( Mathf.Lerp(startLocation.x,targetLocation.x -10,lerpTimer),this.transform.position.y,Mathf.Lerp(startLocation.z,targetLocation.z -10,lerpTimer));
 
-		if ( targetingTimer > 1 ) 
+		if ( lerpTimer > 1 ) 
 		{ 
 			targeting = false; 
-			targetingTimer = 0;
+			lerpTimer = 0;
 		}
 	}
 
@@ -103,5 +113,35 @@ public class GameCamera : MonoBehaviour {
 
 	public bool Get_Camera_Lock () { return cameraLocked; }
 
+	public void Zoom (bool value)
+	{
+		if (!zoomCamera)
+		{
+			if (!zoomedIn && value) 
+			{
+				zoomCamera = true;
+				zoomedIn = true;
+			}
+			else if (zoomedIn && !value) 
+			{
+				zoomCamera = true;
+				zoomedIn = false;
+			}
+		}
+			
+	}
 
+	private void Zoom_Camera ()
+	{
+		lerpTimer += Time.deltaTime*2;
+
+		if (zoomedIn) CameraComponent.fieldOfView = Mathf.Lerp(Globals.Instance.CAMERA_ZOOM_OUT,Globals.Instance.CAMERA_ZOOM_IN,lerpTimer);
+		else CameraComponent.fieldOfView = Mathf.Lerp(Globals.Instance.CAMERA_ZOOM_IN,Globals.Instance.CAMERA_ZOOM_OUT,lerpTimer);
+
+		if (lerpTimer > 1) 
+		{
+			zoomCamera = false;
+			lerpTimer = 0;
+		}
+	}
 }

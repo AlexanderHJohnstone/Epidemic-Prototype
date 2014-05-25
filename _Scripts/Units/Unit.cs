@@ -95,7 +95,7 @@ public class Unit : MonoBehaviour {
 		else { return false; }
 	}
 
-	public void Selected ()
+	public void Set_Selected ()
 	{
 		Renderer[] tileRender = GetComponentsInChildren<Renderer>();
 		foreach ( Renderer r in tileRender ) 

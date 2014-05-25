@@ -6,11 +6,12 @@ public class Tile : MonoBehaviour {
 	private Vector3 location = Vector3.zero;
 	private bool open = false;
 	private bool highlighted = false;
+	private bool selected = false;
 	private landscapeType type = landscapeType.open;
 
-	private Color neutral_Color = new Color (0.8f,0.8f, 0.8f, 0f);
+	private Color neutral_Color = new Color (0.8f,0.8f, 0.8f, 0.6f);
 	private Color highlighted_Color = new Color (0.8f,0, 0, 0.4f);
-	private Color selected_Color = new Color (0.8f,0, 0, 0.8f);
+	private Color selected_Color = new Color (0.9f,0.3f, 0.3f, 0.8f);
 	 
 
 	public void Constructor (Vector3 loc, bool access, landscapeType tileType)
@@ -21,7 +22,7 @@ public class Tile : MonoBehaviour {
 		type = tileType;
 		Set_Tag ();
 
-		Set_Highlighted(true);
+		Set_Highlighted(false);
 
 		Set_Visibility () ;
 	}
@@ -54,16 +55,30 @@ public class Tile : MonoBehaviour {
 
 	public landscapeType Get_Type () { return type; }
 
-	public void Selected ()
+	public void Set_Selected (bool value)
 	{
+		selected = value;
+	
 		Renderer[] tileRender = GetComponentsInChildren<Renderer>();
-		
+
 		if (open)
 		{
-			foreach ( Renderer r in tileRender ) 
-				r.material.color = selected_Color; 
+			if (selected)
+				foreach ( Renderer r in tileRender ) 
+					r.material.color = selected_Color; 
+			else
+			{
+				if (highlighted)
+					foreach ( Renderer r in tileRender ) 
+						r.material.color = highlighted_Color; 
+				else
+					foreach ( Renderer r in tileRender ) 
+						r.material.color = neutral_Color;
+			}
 		}
 	}
+
+	public bool Get_Selected () { return selected; }
 
 	public void Set_Highlighted (bool value) 
 	{ 
