@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Skill {
 	
@@ -7,9 +8,9 @@ public class Skill {
 	public string name;				// The name of the skill.
 	public string desc = "";		// The description of the skill.
 	public int range;				// The range of the skill in tiles from the user.
-	public int uses = -1;				// The number of uses a skill has left. -1 = infinite uses.
-	public int capacity = -1;			// The maximum and initial number of uses an item has. -1 = infinite.
-	
+	public int uses = -1;			// The number of uses a skill has left. -1 = infinite uses.
+	public int capacity = -1;		// The maximum and initial number of uses an item has. -1 = infinite.
+
 	// Holder References
 	public Unit owner;
 	
@@ -18,7 +19,7 @@ public class Skill {
 	
 	// **********************************************************************
 	
-	// GETTER METHODS
+	// *** GETTER METHODS
 
 	public string GetName() { return name; }
 	public int GetRange() { return range; }
@@ -27,8 +28,8 @@ public class Skill {
 	public Unit GetOwner() { return owner; }
 	public string GetIcon() { return icon; }
 	
-	// DISPLAY METHODS
-	
+	// *** DISPLAY METHODS
+
 	public void ShowRange() {
 		Map ownerMap = owner.GetMap();
 		Tile ownerTile = owner.GetTile();
@@ -44,12 +45,12 @@ public class Skill {
 		}
 	}
 	
-	// ACTION METHODS
+	// *** ACTION METHODS
 	
 	// Must be overriden. Returns true if the skill executes successfully.
 	public virtual bool Perform() { return false; }
 	
-	// VALIDATION METHODS
+	// *** VALIDATION METHODS
 	
 	// Returns true if the passed tile is within range of this skill, measured from the skill's owner.
 	public bool InRange(Tile targetTile) {
@@ -65,4 +66,6 @@ public class Skill {
 		
 		return validTarget;
 	}
+
+	// *** HELPER METHODS
 }

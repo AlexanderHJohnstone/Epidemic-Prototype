@@ -19,7 +19,7 @@ public class Skl_Accelerator : Skill {
 
 	public bool Perform(Unit target) {
 		if(InRange(target.GetTile()) && target == owner) {
-			owner.AddPassive("Accelerated" , pendulumIncrease);
+			owner.IncreasePassive("Temp_Accelerated" , pendulumIncrease);
 			return true;
 		}
 		else { return false; }

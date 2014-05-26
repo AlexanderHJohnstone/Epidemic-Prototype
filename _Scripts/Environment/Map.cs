@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Map : MonoBehaviour 
 {
@@ -8,6 +9,8 @@ public class Map : MonoBehaviour
 	private GameObject[,] tiles;
 	private Unit[] enemies;
 	private Unit[] units;
+	private int maxX;
+	private int maxY;
 
 	public void Constructor ( int levelSize, int landscapeDensity, int difficulty, int characters )
 	{
@@ -104,6 +107,11 @@ public class Map : MonoBehaviour
 			return null;
 		}		
 	}
+
+	//public List<Tile> Get_Neighbors (Tile tile) {}
+
+	public int Get_MaxX () { return maxX; }
+	public int Get_MaxY () { return maxY; }
 
 	public Unit[] Get_Units () {return units;}
 	public Unit Get_Unit (int id) { if (id < units.Length) return units[id]; else return null; }

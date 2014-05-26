@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Tile : MonoBehaviour {
 	
@@ -7,17 +8,23 @@ public class Tile : MonoBehaviour {
 	private bool open = false;
 	private bool highlighted = false;
 	private landscapeType type = landscapeType.plane;
+	private Map map = null;
 
 	private Color neutral_Color = new Color (0.8f,0.8f, 0.8f, 0f);
 	private Color highlighted_Color = new Color (0.8f,0, 0, 0.4f);
-	 
 
-	public void Constructor (Vector3 loc, bool access, landscapeType tileType)
+	private List<Tile> Neighbors = new List<Tile>();
+
+	public void Constructor (Map sMap, Vector3 loc, bool access, landscapeType tileType)
 	{
 		location = loc;
 		open = access;
 		type = tileType;
 		Set_Highlighted(true);
+		map = sMap;
+
+
+
 
 		Set_Visibility () ;
 	}

@@ -5,12 +5,12 @@ using System.Collections.Generic;
 public class Unit : MonoBehaviour {
 	
 	// Statistics
-	public string name;
-	public int level = 1;
-	public int move = 1;
-	public int hitpoints = 1;
-	public int hpMax = 10;
-	public int armor = 1;
+	public string name;							// The unit's display name.
+	public int level = 1;						// The unit's experience level.
+	public int move = 1;						// How many tiles this unit can move.
+	public int hitpoints = 1;					// The unit's current hitpoints.
+	public int hpMax = 10;						// The unit's maximum hitpoints.
+	public int armor = 1;						// The unit's current armor rating.
 	
 	// Skill Array
 	protected List<Skill> skills;
@@ -23,7 +23,7 @@ public class Unit : MonoBehaviour {
 	protected Tile currentTile;
 	protected Map currentMap;
 	
-	//*****************************************************************************************
+//*****************************************************************************************
 	
 	// *** GETTER METHODS
 	public string GetName() { return name; }
@@ -38,20 +38,23 @@ public class Unit : MonoBehaviour {
 	// *** SETTER METHODS
 	public void SetTile(Tile newTile) { currentTile = newTile; }
 	
-	// *** INITIALIZATION METHODS 
-	
+// *** INITIALIZATION METHODS 
+
+	// Initializes this unit to a position on a given map.
 	public void InitializeOnMap(Map map, Tile tile) {
 		currentMap = map;
 		currentTile = tile;
 	}
 	
-	// *** DAMAGE METHODS
-	
+// *** DAMAGE METHODS
+
+	// Makes the unit take int in damage. Kills the unit (isDead = true) if hitpoints goes below 0.
 	public void TakeDamage(int damage) {
 		hitpoints -=  damage;
 		if(hitpoints <= 0) { isDead = true; }
 	}
-	
+
+	// Heals hitpoints on the unit up to hpMax.
 	public void HealDamage(int heal) {
 		if(!isDead) {
 			hitpoints += heal;
@@ -59,18 +62,21 @@ public class Unit : MonoBehaviour {
 		}
 	}
 
-	// *** ACTIVE SKILL METHODS
+// *** PASSIVE SKILL METHODS
 
-	public void AddPassive(string passive, int value) {
+	// Adds a passive skill and value entry into the unit's passive dictionary. 
+	public void IncreasePassive(string passive, int value) {
 		if(!passives.ContainsKey(passive)) { passives.Add (passive, value); }
 		else { passives[passive] += value; }
 	}
 
+	// Removes a passive from the passive dictionary and it's associated value.
 	public void RemovePassive(string passive) {
 		passives.Remove(passive);
 	}
 
-	public void RemovePassive(string passive, int value) {
+	// Decreases a given passive entry by the supplied value. If the value decreases the passive to 0 or less, the passive entry is removed.
+	public void DecreasePassive(string passive, int value) {
 		if(passives.ContainsKey(passive)) { 
 			passives[passive] -= value;
 			if(passives[passive] <= 0) { passives.Remove(passive); }
