@@ -1,30 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 public class Tile : MonoBehaviour {
 	
 	private Vector3 location = Vector3.zero;
 	private bool open = false;
 	private bool highlighted = false;
-	private landscapeType type = landscapeType.plane;
-	private Map map = null;
+	private bool selected = false;
+	private landscapeType type = landscapeType.open;
 
-	private Color neutral_Color = new Color (0.8f,0.8f, 0.8f, 0f);
+	private Color neutral_Color = new Color (0.8f,0.8f, 0.8f, 0.6f);
 	private Color highlighted_Color = new Color (0.8f,0, 0, 0.4f);
+	private Color selected_Color = new Color (0.9f,0.3f, 0.3f, 0.8f);
+	 
 
-	private List<Tile> Neighbors = new List<Tile>();
-
-	public void Constructor (Map sMap, Vector3 loc, bool access, landscapeType tileType)
+	public void Constructor (Vector3 loc, bool access, landscapeType tileType)
 	{
 		location = loc;
-		open = access;
+		Set_Open(access);
+
 		type = tileType;
-		Set_Highlighted(true);
-		map = sMap;
+		Set_Tag ();
 
-
-
+		Set_Highlighted(false);
 
 		Set_Visibility () ;
 	}
@@ -33,13 +31,54 @@ public class Tile : MonoBehaviour {
 
 	public bool Get_Open () { return open; }
 
+	private void Set_Tag ()
+	{
+		if (type == landscapeType.open)
+			this.gameObject.tag = "open";
+		else if ( type == landscapeType.moveBlock )
+			this.gameObject.tag = "moveBlock";
+		else
+			this.gameObject.tag = "visBlock";
+	}
+
 	public void Set_Open (bool value) 
 	{ 
-		open = value; 
+		open = value;
+
+		if (open)
+			this.gameObject.tag = "open";	
+		else
+			this.gameObject.tag = "moveBlock";
+		
 		Set_Visibility ();
 	}
 
 	public landscapeType Get_Type () { return type; }
+
+	public void Set_Selected (bool value)
+	{
+		selected = value;
+	
+		Renderer[] tileRender = GetComponentsInChildren<Renderer>();
+
+		if (open)
+		{
+			if (selected)
+				foreach ( Renderer r in tileRender ) 
+					r.material.color = selected_Color; 
+			else
+			{
+				if (highlighted)
+					foreach ( Renderer r in tileRender ) 
+						r.material.color = highlighted_Color; 
+				else
+					foreach ( Renderer r in tileRender ) 
+						r.material.color = neutral_Color;
+			}
+		}
+	}
+
+	public bool Get_Selected () { return selected; }
 
 	public void Set_Highlighted (bool value) 
 	{ 

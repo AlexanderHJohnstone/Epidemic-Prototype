@@ -6,5 +6,5 @@ using System.Collections;
 /// Party all day!
 /// </summary>
 
-public enum landscapeType { plane, other };
+public enum landscapeType { open, moveBlock, visBlock };
 
