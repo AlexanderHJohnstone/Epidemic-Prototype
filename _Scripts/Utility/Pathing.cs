@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public static class PathFind {
+public static class Pathing {
 
 	// Returns the shortest path of tiles in Manhattan distance from the currentTile to the supplied tile.
 	public static Path FindPath(Tile start, Tile destination)
