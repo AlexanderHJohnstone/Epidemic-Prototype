@@ -36,10 +36,8 @@ public class Inputs : MonoBehaviour {
 			}
 		}
 
-		if (Input.GetAxis("Mouse ScrollWheel") < -0.3f)
-			cameraHolder.GetComponent<GameCamera>().Zoom(true);
-		else if (Input.GetAxis("Mouse ScrollWheel") > 0.3f)
-			cameraHolder.GetComponent<GameCamera>().Zoom(false);
+		if (Input.GetAxis("Mouse ScrollWheel") < -0.3f) cameraHolder.GetComponent<GameCamera>().Zoom(true);
+		else if (Input.GetAxis("Mouse ScrollWheel") > 0.3f) cameraHolder.GetComponent<GameCamera>().Zoom(false);
 
 		if ( doubleClick < 0.35f) doubleClick += Time.deltaTime;
 	}

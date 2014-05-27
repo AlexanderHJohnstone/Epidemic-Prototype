@@ -85,13 +85,13 @@ public class GameCamera : MonoBehaviour {
 		mapBounds.z = -10;
 	}
 
-	private void Set_Start_Pos ( Vector2 loc ) { this.transform.position = new Vector3 (loc.x -10f, 15f, loc.y-10f); }
+	private void Set_Start_Pos ( Vector2 loc ) { this.transform.position = new Vector3 (loc.x -8f, 15f, loc.y-8f); }
 
 	private void Target_Camera ()
 	{
 		lerpTimer += Time.deltaTime;
 
-		this.transform.position = new Vector3 ( Mathf.Lerp(startLocation.x,targetLocation.x -10,lerpTimer),this.transform.position.y,Mathf.Lerp(startLocation.z,targetLocation.z -10,lerpTimer));
+		this.transform.position = new Vector3 ( Mathf.Lerp(startLocation.x,targetLocation.x -8,lerpTimer),this.transform.position.y,Mathf.Lerp(startLocation.z,targetLocation.z -8,lerpTimer));
 
 		if ( lerpTimer > 1 ) 
 		{ 
