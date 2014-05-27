@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System;
 
 // An immutable stack of Tiles for Pathfinding.
 
-public class Path : IEnumerable
+public class Path : IEnumerable, IComparable<Path>
 {
 	public Tile LastStep { get; private set; }
 	public Path PreviousSteps { get; private set; }
@@ -16,6 +18,7 @@ public class Path : IEnumerable
 		LastStep = lastStep;
 		PreviousSteps = previousSteps;
 		TotalCost = totalCost;
+		//Debug.Log ("Step: " + lastStep.Get_X() + " " + lastStep.Get_Y ());
 	}
 
 	public Path(Tile start) : this(start, null, 0) {}
@@ -23,6 +26,11 @@ public class Path : IEnumerable
 	public Path AddStep(Tile step, double stepCost)
 	{
 		return new Path(step, this, TotalCost + stepCost);
+	}
+
+	public int CompareTo(Path obj) {
+		Path p = (Path)obj;
+		return TotalCost.CompareTo(p.TotalCost);
 	}
 
 	public IEnumerator GetEnumerator()

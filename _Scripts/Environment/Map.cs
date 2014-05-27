@@ -9,6 +9,8 @@ public class Map : MonoBehaviour
 	private GameObject[,] tiles;
 	private List<Unit> enemies;
 	private List<Unit> units;
+	private int maxX;
+	private int maxY;
 
 	private Vector2 startPos = Vector2.zero;
 
@@ -19,8 +21,20 @@ public class Map : MonoBehaviour
 		Spawn_Characters (characters, levelSizeX, levelSizeY);
 		Spawn_Enemies (difficulty, levelSizeX, levelSizeY);
 
-		//
+		maxX = levelSizeX;
+		maxY = levelSizeY;
 	}
+
+	void Update() {
+		//FOR DEBUGGING PATHFINDING
+		/*if(Input.GetKeyDown (KeyCode.A)) {
+			Path newPath = PathFind.FindPath(Get_Tile(3, 3), Get_Tile (20, 20));
+		}*/
+	}
+
+	public int GetMaxX() { return maxX; }
+
+	public int GetMaxY() { return maxY; }
 
 	/// <summary>
 	/// Instantiates and places map tiles, as well as temporary 'ground' texture
@@ -43,7 +57,7 @@ public class Map : MonoBehaviour
 				tiles[i,j] = (GameObject)Instantiate(tile);
 				tiles[i,j].transform.position = new Vector3 (i,0,j);
 				tiles[i,j].AddComponent<Tile>();
-				tiles[i,j].GetComponent<Tile>().Constructor(new Vector3(i,0,j),true,landscapeType.open);
+				tiles[i,j].GetComponent<Tile>().Constructor(this, new Vector3(i,0,j),true,landscapeType.open);
 				tiles[i,j].name = i+","+j;
 				tiles[i,j].transform.parent = tileHolder.transform;
 			}

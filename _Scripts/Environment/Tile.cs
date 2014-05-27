@@ -1,22 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Tile : MonoBehaviour {
 	
 	private Vector3 location = Vector3.zero;
+	private int x;
+	private int y;
 	private bool open = false;
 	private bool highlighted = false;
 	private bool selected = false;
 	private landscapeType type = landscapeType.open;
+	private Map map;													// A reference to the map that contains this tile.
 
 	private Color neutral_Color = new Color (0.8f,0.8f, 0.8f, 0.6f);
 	private Color highlighted_Color = new Color (0.8f,0, 0, 0.4f);
 	private Color selected_Color = new Color (0.9f,0.3f, 0.3f, 0.8f);
-	 
 
-	public void Constructor (Vector3 loc, bool access, landscapeType tileType)
+	public void Constructor (Map cMap, Vector3 loc, bool access, landscapeType tileType)
 	{
 		location = loc;
+		map = cMap;
+		x = (int)loc.x;
+		y = (int)loc.z;
+
 		Set_Open(access);
 
 		type = tileType;
@@ -24,12 +31,40 @@ public class Tile : MonoBehaviour {
 
 		Set_Highlighted(false);
 
-		Set_Visibility () ;
+		Set_Visibility ();
+
+
 	}
 
 	public Vector3 Get_Pos () { return location; }
 
 	public bool Get_Open () { return open; }
+
+	public List<Tile> Get_OpenNeighbors() { 
+		List<Tile> openNeighbors = new List<Tile>();
+
+		Tile t;
+
+		// TODO: ADD RANDOM TILE SEARCH ORDERING
+		if(x > 0) { 
+			t = map.Get_Tile(x - 1, y);
+			if(t.Get_Open()) { openNeighbors.Add (t); }
+		}
+		if(x < map.GetMaxX() - 1) { 
+			t = map.Get_Tile(x + 1, y);
+			if(t.Get_Open()) { openNeighbors.Add (t); }
+		}
+		if(y > 0) { 
+			t = map.Get_Tile(x, y - 1);
+			if(t.Get_Open()) { openNeighbors.Add (t); }
+		}
+		if(y < map.GetMaxY() - 1) { 
+			t = map.Get_Tile(x, y + 1);
+			if(t.Get_Open()) { openNeighbors.Add (t); }
+		}
+
+		return openNeighbors; 
+	}
 
 	private void Set_Tag ()
 	{
