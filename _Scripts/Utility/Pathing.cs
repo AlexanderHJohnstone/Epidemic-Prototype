@@ -34,7 +34,7 @@ public static class Pathing {
 		return null;
 	}
 	
-	private static int ManhattanDistance(Tile startTile, Tile endTile) {
+	public static int ManhattanDistance(Tile startTile, Tile endTile) {
 		int xDist = Mathf.Abs (endTile.Get_X() - startTile.Get_X());
 		int yDist = Mathf.Abs (endTile.Get_Y() - startTile.Get_Y());
 		

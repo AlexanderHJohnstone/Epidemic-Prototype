@@ -7,7 +7,7 @@ public class Unit : MonoBehaviour {
 	// Statistics
 	public string name;							// The unit's display name.
 	public int level = 1;						// The unit's experience level.
-	public int move = 1;						// How many tiles this unit can move.
+	public int move = 7;						// How many tiles this unit can move.
 	public int hitpoints = 1;					// The unit's current hitpoints.
 	public int hpMax = 10;						// The unit's maximum hitpoints.
 	public int armor = 1;						// The unit's current armor rating.
@@ -18,6 +18,7 @@ public class Unit : MonoBehaviour {
 	
 	// State Flags
 	public bool isDead = false;
+	public bool selected = false;
 	
 	// Map Data
 	protected Tile currentTile;
@@ -101,10 +102,93 @@ public class Unit : MonoBehaviour {
 		else { return false; }
 	}
 
-	public void Set_Selected ()
+	// Returns false if the unit can not move to the given tile.
+	public bool MoveTo(Tile target) {
+		if(target.Get_Open()) {
+			Path pathToTile = Pathing.FindPath(currentTile, target);
+
+			// Unit cannot move that far.
+			if(pathToTile.Length > move) { 
+				Set_Selected(false);
+				return false;
+			}
+
+			// Unit performs the move.
+			else {
+				currentTile.Set_Open(true);
+				AnimateOnPath(pathToTile);
+				this.currentTile = target;
+				target.Set_Open (false);
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	// MOVE TO UNIT ANIMATOR
+	protected void AnimateOnPath(Path animPath) {
+		float movetime = .3f;
+		float count = 0;
+
+		Set_Selected(false);
+
+		foreach(Tile t in animPath.StartToEnd()) {
+			iTween.MoveTo (this.gameObject, iTween.Hash ("position", new Vector3(t.gameObject.transform.position.x, t.gameObject.transform.position.y, t.gameObject.transform.position.z), "time", movetime, "delay", movetime * count));
+			count++;
+		}
+	}
+
+
+	// Highlights all tiles that this unit can path to in a given range.
+	protected void DisplayMovableTiles(int range, bool show) {
+		Tile markTile;
+
+		if(!show) {
+			for(int x = currentTile.Get_X() - range; x <= currentTile.Get_X() + range; x++) {
+				for(int y = currentTile.Get_Y() - range; y <= currentTile.Get_Y() + range; y++) {
+					if(x >= 0 && x < currentMap.GetMaxX() && y >= 0 && y < currentMap.GetMaxY()) { 
+						markTile = currentMap.Get_Tile(x, y);
+						markTile.Set_Selected(false);
+					}
+				}
+			}
+		}
+
+		else if (show) {
+			for(int x = currentTile.Get_X() - range; x <= currentTile.Get_X() + range; x++) {
+				for(int y = currentTile.Get_Y() - range; y <= currentTile.Get_Y() + range; y++) {
+					if(x >= 0 && x < currentMap.GetMaxX() && y >= 0 && y < currentMap.GetMaxY()) { 
+						markTile = currentMap.Get_Tile(x, y);
+
+						if(Pathing.ManhattanDistance(currentTile, markTile) <= range) {
+							Path p = Pathing.FindPath(currentTile, markTile);
+							if(p != null && p.Length <= range) { 
+								print ("MXY: " + markTile.Get_X () + " " + markTile.Get_Y ());
+								markTile.Set_Selected(show);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public void Set_Selected (bool value)
 	{
+		selected = value;
+
 		Renderer[] tileRender = GetComponentsInChildren<Renderer>();
-		foreach ( Renderer r in tileRender ) 
-			r.material.color = Globals.Instance.SELECTED_COLOR; 
+
+		if(selected) {
+			foreach ( Renderer r in tileRender ) 
+				r.material.color = Globals.Instance.SELECTED_COLOR; 
+			DisplayMovableTiles(move, true);
+		}
+		else {
+			foreach ( Renderer r in tileRender ) 
+				r.material.color = Globals.Instance.NEUTRAL_COLOR; 
+			DisplayMovableTiles(move, false);
+		}
 	}
 }

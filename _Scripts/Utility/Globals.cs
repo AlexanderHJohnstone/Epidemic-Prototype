@@ -35,7 +35,8 @@ public class Globals
 	public float CAMERA_ZOOM_IN = 30;
 	public float CAMERA_ZOOM_OUT = 55;
 
-	public Color SELECTED_COLOR =  new Color (0.8f,0, 0, 0.8f);
+	public Color SELECTED_COLOR =  new Color (0.8f, 0, 0, 0.8f);
+	public Color NEUTRAL_COLOR = new Color(1f, 1f, 1f, 0f);
 	
 	#endregion
 	

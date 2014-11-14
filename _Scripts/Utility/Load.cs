@@ -37,8 +37,8 @@ public class Load : MonoBehaviour
 
 	
 		//add input script to this object
-		this.gameObject.AddComponent<Inputs>();
-		this.gameObject.GetComponent<Inputs>().Initialize(cameraHolder,guiRoot.GetComponent<Camera>());
+		this.gameObject.AddComponent<TacInput>();
+		this.gameObject.GetComponent<TacInput>().Initialize(cameraHolder,guiRoot.GetComponent<Camera>());
 	
 	}
 }

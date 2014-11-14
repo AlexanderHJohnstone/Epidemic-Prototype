@@ -12,6 +12,7 @@ public class Tile : MonoBehaviour {
 	private bool selected = false;
 	private landscapeType type = landscapeType.open;
 	private Map map;													// A reference to the map that contains this tile.
+	private GameObject occupant = null;
 
 	private Color neutral_Color = new Color (0.8f,0.8f, 0.8f, 0.6f);
 	private Color highlighted_Color = new Color (0.8f,0, 0, 0.4f);
